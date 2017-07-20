@@ -1,0 +1,104 @@
+{% extends "sis_base.html" %}
+{% load sis_extras %}
+{% load staticfiles %}
+
+{% block stylesheets %}
+  {{ block.super }}
+  <link rel="stylesheet" href="{% static "css/style.css" %}" type="text/css" media="screen" />
+  <style>
+.masthead { width: 550px; height: 70px; background: url('{% if header_image %}{{ header_image.url }}{% endif %}') no-repeat left; float: left; background-size:contain; }
+    .school-color { background: {{ config.SCHOOL_COLOR|default_if_none:"#FCB034" }}; }
+  </style>
+{% endblock %}
+
+{% block bigcontent %}
+<div id="topbar" class="school-color"></div>
+
+<div class="headerwrapper">
+  <header class="header">
+            <div class="masthead">
+            </div>
+            {% if request.user.is_authenticated %}
+                <nav class="menu-container">
+                    <div id="mbtnavbar">
+                        <ul id='mbtnav'>
+                            <li>
+                                <a href='#'>
+                                    {% if user.first_name and user.last_name %}
+                                        {{ user.first_name }} {{ user.last_name }}
+                                    {% else %}
+                                        {{ user }}
+                                    {% endif %}
+                                    <span class="arrowdown">▼</span>
+                                </a>
+                                <ul>
+                                    {% if user|in_group:"company" %}
+                                        <li><a href="{% url "ecwsp.work_study.views.supervisor_dash" %}">Supervisor Dashboard</a></li>
+                                    {% endif %}
+                                    {% if user|in_group:"students" %}
+                                        {% if "ecwsp.work_study" in settings.INSTALLED_APPS %}
+                                            <li><a href="{% url "ecwsp.work_study.views.student_view" %}">Submitted Cards</a></li>
+                                            <li><a href="/">Create Time Card</a></li>
+                                        {% endif %}
+                                        {% if "ecwsp.volunteer_track" in settings.INSTALLED_APPS %}
+                                            <li><a href="{% url "ecwsp.volunteer_track.views.student_dash" %}">Volunteer</a></li>
+                                        {% endif %}
+                                        {% if config.GRADES_ALLOW_STUDENT_VIEWING == True %}
+                                            <li><a href="{% url "ecwsp.benchmark_grade.views.student_report" %}">Grades</a></li>
+                                        {% endif %}
+                                    {% endif %}
+                                    {% if user|in_group:"family" %}
+                                        {% if "ecwsp.benchmark_grade" in settings.INSTALLED_APPS %}
+                                            <li><a href="{% url "ecwsp.benchmark_grade.views.student_report" %}">Grades</a></li>
+                                        {% endif %}
+                                    {% endif %}
+            <li><a href="/accounts/password_change">Change Password</a></li>
+                                    {% if not next %}
+                                        <li><a href="{% url "ecwsp.sis.views.logout_view" %}">Log Out</a></li>
+                                    {% endif %}
+                                </ul>
+                            </li>
+                            {% block nav %}
+                            {% endblock %}
+                            
+                        </ul>
+                    </div>
+                </nav>
+            {% endif %}
+        </header>
+</div><!-- .headerwrapper-->
+
+<div class="message_area">
+    {% for user_message in user_messages %}
+  {{ user_message.message|safe }}
+    {% endfor %}
+</div>
+
+<div class="clear"></div>
+<div id="pagewrap">
+        {% block content %}
+      <div class="spacer-3"></div>
+      {% if msg %}
+    {{ msg }}
+      {% else %}
+    {% if request.user.is_authenticated %}
+        No content. Your user account may not be set up correctly. Please contact an administrator.
+    {% else %}
+        Please <a href="/">log in</a>.
+    {% endif %}
+      {% endif %}
+        {% endblock %}
+
+
+<div class="spacer-3"></div>
+
+<div class="footer">
+Copyright 2010-2014 <a href="#">Santosh Ray</a>.<br />
+This site is for authorized use only.<br />
+Powered by <a href="#">Django</a>.
+</div>
+<div class="spacer-3"></div>
+
+
+</div>
+{% endblock %}

@@ -1,0 +1,74 @@
+{% load staticfiles %}
+{% load compress %}
+{% load i18n %}
+
+<!DOCTYPE html>
+<!-- paulirish.com/2008/conditional-stylesheets-vs-css-hacks-answer-neither/ -->
+<!--[if IE 7]>    <html class="no-js ie7 oldie" lang="{{ LANGUAGE_CODE|default:"en-us" }}" {% if LANGUAGE_BIDI %}dir="rtl"{% endif %}> <![endif]-->
+<!--[if IE 8]>    <html class="no-js ie8 oldie" lang="{{ LANGUAGE_CODE|default:"en-us" }}" {% if LANGUAGE_BIDI %}dir="rtl"{% endif %}> <![endif]-->
+<!--[if IE 9]>    <html class="no-js ie9" lang="{{ LANGUAGE_CODE|default:"en-us" }}" {% if LANGUAGE_BIDI %}dir="rtl"{% endif %}> <![endif]-->
+<!--[if gt IE 9]><!--> <html class="no-js" lang="{{ LANGUAGE_CODE|default:"en-us" }}" {% if LANGUAGE_BIDI %}dir="rtl"{% endif %}> <!--<![endif]-->
+<head>
+  {% block head %}
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+	  <!-- <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.1.1/css/bootstrap.min.css" /> -->
+  {% include "partials/favicons-etc.html" %}
+
+	<link href='//fonts.googleapis.com/css?family=Open+Sans:400,400italic,600,600italic,700,700italic' rel='stylesheet' type='text/css'>
+	<link href="//netdna.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
+  
+	<script src="{% static 'jquery/dist/jquery.min.js' %}"></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.1.1/js/bootstrap.min.js"></script>
+	<script src="{% static 'js/jquery.cookie-1.4.1.min.js' %}"></script>
+	<!--
+	-->
+  <script src="{% static 'bootstrap-hover-dropdown/bootstrap-hover-dropdown.min.js' %}"></script>
+	<script src="{% static 'js/nav.js' %}"></script>
+
+	{% include 'autocomplete_light/static.html' %}
+	<script type="text/javascript">
+	  var csrf_token = '{{ csrf_token|escapejs }}'
+	  var STATIC_URL = '{{ STATIC_URL }}'
+	</script>
+
+	{% compress css %}
+	  <link type="text/x-scss" href="{% static 'styles.scss' %}" rel="stylesheet" charset="utf-8" />
+	{% endcompress %}
+	
+	{% block extra_head %}{% endblock %}
+  {% endblock %}
+  
+  {% block angular_app %}
+  {% endblock %}
+
+  {% include "partials/analytics.html" %}
+</head>
+
+<body>
+
+{% block body %}
+  {% include "partials/outdated-browser.html" %}
+
+  {% block nav %}
+    {% include "nav.html" %}
+  {% endblock %}
+
+  {% block nav_page_specific %}
+  {% endblock %}
+
+  {% block content_full %}
+      <div class="container-fluid full-height">
+        <div class="row">
+          <div class="col-xs-12 main">
+            <h1>{% block title %}{% endblock %}</h1>
+            {% block content %}{% endblock %}
+          </div>
+        </div>
+      </div>
+  {% endblock %}
+
+{% endblock %}
+</body>
+</html>

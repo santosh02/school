@@ -1,0 +1,55 @@
+{% extends "admin_base.html" %}
+{% load i18n %}
+
+{% block extrahead %}
+    {{ form.media }}
+{% endblock %}
+
+{% block nav_page_specific %}
+<div id="mm-page-specific" role="navigation">
+    <div class="breadcrumb">
+        <ul>
+            <li><a href="/admin">Home</a></li>
+            <li><a href="{% url 'admin:attendance_studentattendance_changelist' %}">Student Attendance</a></li>
+            <li>Attendance Reports</li>
+        </ul>
+    </div>
+</div>
+{% endblock %}
+
+{% block content %}
+    <h1>Attendance Reports</h1>
+    <form action="" method="post" style="width:850px;">
+        <fieldset>
+            <legend>Students Reports</legend>
+            <table>
+            {{ form.as_table }}
+            </table>
+            <input type="submit" name="student" value="By Student Report" /><br/>
+            <input type="submit" name="aggr" value="Aggregate Report" /><br/>
+            <input type="submit" name="perfect_attendance" value="Perfect Attendance Certificates"/> (Total tardies and absenses 0) <br/>
+        </fieldset>
+    </form>
+    <form action="" method="post" style="width:850px;">
+        <fieldset>
+            <legend>Daily Attendance</legend>
+            {{ daily_form.as_p }}
+            <input type="submit" value="Submit" name="daily" />
+        </fieldset>
+    </form>
+    
+    <form action="" id="myform" method="post" style="width:850px;">
+        <fieldset>
+            <legend>Lookup student</legend>
+            <table>
+                <tr>
+                    <td> {{ lookup_form.as_p }}  </td>
+                </tr>
+                <tr>
+                    <td><input type="submit" name="studentlookup" /></td>
+                </tr>
+            </table>
+        </fieldset>
+    </form> 
+{% endblock %}
+

@@ -1,0 +1,27 @@
+{% extends "sis_base.html" %}
+{% load i18n %}
+{% load sis_extras %}
+{% load static from staticfiles %}
+
+{% block javascripts %}
+{{ block.super }}
+{% endblock %}
+
+{% block stylesheets %}
+      {{ block.super }}
+      <link rel="stylesheet" type="text/css" href="{% static "css/grappelli_lite.css" %}"/> 
+{% endblock %}
+
+{% block nav %}
+  {% include "nav.html" %}
+{% endblock %}
+
+{% block messages %}
+    {% if messages %}
+        <ul class="grp-messagelist">
+            {% for message in messages %} 
+                <li{% if message.tags %} class="grp-{{ message.tags }}"{% endif %}>{{ message }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+{% endblock %}

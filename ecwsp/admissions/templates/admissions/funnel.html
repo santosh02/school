@@ -1,0 +1,112 @@
+{% extends "admin/base_site.html" %}
+{% load i18n admission_extras %}
+
+{% block extrastyle %}
+    {{ block.super }}
+    <style type="text/css">
+	div.box {
+	    text-align:center;
+	    width: 800px;
+	    margin:0px auto;
+	    padding:10px;
+	    border:1px dashed #333;
+	    background-color:#eee;
+	}
+	div.two {
+	    width: 750px;
+	}
+	div.three {
+	    width: 700px;
+	}
+	div.four {
+	    width: 650px;
+	}
+	div.five {
+	    width: 600px;
+	}
+	div.six {
+	    width: 550px;
+	}
+	#content {
+	    float: center;
+	}
+	h2 {
+	    text-align: center;
+	}
+	.level {
+	    font-weight: bold;
+	}
+	.thin {
+	    padding-top: 5px;
+	    padding-bottom: 2px;
+	    border: 0;
+	}
+    </style>
+{% endblock %}
+
+{% block breadcrumbs %}
+<ul>
+  <li><a href="/">{% trans 'Home' %}</a>{% if title %} &rsaquo; {{ title }}{% endif %}</li>
+  <li><a href="{% url "admin:app_list" 'admissions' %}">{% trans 'Admissions' %}</a></li>
+  <li><a href="../">{% trans 'Reports' %}</a></li>
+  <li>Funnel</li>
+</ul>
+{% endblock %}
+
+{% block content %}
+<h2> Admissions Funnel for year{{ years|pluralize }} {% for year in years %} {{ year }} {% endfor %} </h2>
+<br/>
+{% for level in levels %}
+    <div class="{{ level.css_class }} box">
+	<div class="level">
+	    {{ level }}
+	    <table style="margin-left: auto;margin-right: auto;">
+		<tr>
+		    <td class="level thin">
+			Total:
+		    </td>
+		    <td class="level thin">
+			{{ level.students }} Student{{ level.students|pluralize }}
+		    </td>
+		    <td class="level thin" >
+			{{ level.female }} Female{{ level.female|pluralize }} ({{level.female_p|percentage }}) 
+		    </td>
+		    <td class="level thin">
+			{{ level.male }} Male{{ level.male|pluralize }} ({{ level.male_p|percentage }})
+		    </td>
+		</tr>
+		<tr>
+		    <td class="level thin">
+			Current:
+		    </td>
+		    <td class="level thin">
+			{{ level.c_students }} Student{{ level.c_students|pluralize }}
+		    </td>
+		    <td class="level thin">
+			{{ level.c_female }} Female{{ level.c_female|pluralize }} ({{level.c_female_p|percentage }}) 
+		    </td>
+		    <td class="level thin">
+			{{ level.c_male }} Male{{ level.c_male|pluralize }} ({{ level.c_male_p|percentage }})
+		    </td>
+		</tr>
+	    </table> 
+	</div>
+	<table style="margin-left: auto;margin-right: auto;">
+	    <tr>
+	    {% for decision in level.decisions %}
+		{% if forloop.counter0|divisibleby:3 %}
+	    </tr><tr>
+		{% endif %}
+		<td style="border: 0;">
+		    {{ decision }}: {{ decision.students }} Student{{ decision.students|pluralize }} <br/>
+		    {{ decision.female }} F = {{decision.female_p|percentage }} of female prospects <br/>
+		    {{ decision.male }} M = {{ decision.male_p|percentage }} of male prospects <br/>
+		</td>
+	    {% endfor %}
+	    </tr>
+	</table>
+    </div>
+    <br/>
+{% endfor %}
+
+{% endblock %}

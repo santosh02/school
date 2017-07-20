@@ -1,0 +1,31 @@
+#grp-content {
+    top: 120px !important;
+}
+
+#grp-header {
+    font-family: "Open Sans";
+
+    .navbar ul li > a {
+        font-size: 14px !important;
+    }
+}
+
+#search {
+    width: 210px;
+}
+#grp-filters {
+    width: 210px;
+}
+
+.navcontain .navbar .breadcrumbs #breadcrumbs ul li > a {
+    background: url("../grappelli/images/icons-s0e29227ce9.png") no-repeat scroll 0% 0% transparent;
+    display: block;
+    padding-right: 18px;
+    padding-left: 2px;
+    background-position: 100% -760px;
+}
+
+.navcontain .navbar .breadcrumbs #breadcrumbs ul li {
+    padding-left: 5px;
+    padding-right: 5px;
+}

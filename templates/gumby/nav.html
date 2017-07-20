@@ -1,0 +1,162 @@
+{% load i18n %}
+{% load static from staticfiles %}
+<div class="row">
+  <a class="toggle" gumby-trigger="#nav1 > .colgrid > .row > ul" href="#"><i class="icon-menu"></i></a>
+  <div class="two columns logo">
+    <a href="/">
+      <img style="height: 48px; padding-top:10px;" src="{% static "images/logo.svg" %}" />
+    </a>
+  </div>
+  <ul class="fourteen columns" style="float: right;">
+    {% if perms.sis.change_student or perms.sis.view_student %}
+    <li class="field">
+        <div class="admin-title view_student" style="position: relative;">
+            <form id="form_view_student" style="margin-bottom: 0px;" class="view_student">
+              <input id="id_view_student_text" class="ui-autocomplete-input view_student search input" type="text" placeholder="Lookup Student" autocomplete="off" aria-autocomplete="list" aria-haspopup="true" style="width:100%;" role="textbox" name="view_student_text" />
+              <script>
+                  $('#id_view_student_text').yourlabsAutocomplete({
+                      url: '/autocomplete/StudentLookupStudentAutocomplete/',
+                      choiceSelector: 'a',
+                      box: $('<span class="yourlabs-autocomplete autocomplete-lookup-student"></span>'),
+                      fixPosition: function() {
+                        // Insert the autocomplete container after the input.
+                        var pos = $.extend({}, this.input.position(), {
+                            height: this.input.outerHeight(),
+                            width:  this.input.outerWidth()
+                        });
+
+                        this.input.parents().filter(function() {
+                            return $(this).css('overflow') === 'hidden';
+                        }).first().css('overflow', 'visible');
+
+                        this.box.insertAfter(this.input).css(
+                                {top: pos.top + pos.height, left: pos.left, "min-width": pos.width });
+                      }
+                  }).input.bind('selectChoice', function(e, choice, autocomplete) {
+                      window.location.href = choice.attr('href');
+                  });
+              </script>
+            </form>
+        </div>
+
+
+   </li>
+   {% endif %}
+  <li class="mobile_only">
+    <a href="javascript:void(0);">
+      {{ user.first_name }} {{ user.last_name }} 
+      <i class="icon-down-dir"></i>
+    </a>
+    <div class="dropdown">
+      <ul>
+        <li>
+          <a href="/sis/preferences">Preferences</a>
+        </li>
+        <li>
+          <a href="{% url 'admin:password_change' %}">Change Password</a>
+        </li>
+        <li>
+          <a href="{% url 'admin:logout' %}">Log Out</a>
+        </li>
+      </ul>
+    </div>
+  </li>
+    {% if perms.sis.change_student or perms.sis.view_student or perms.sis.reports %}
+    <li class="{% if app_name == "sis" %}active {% endif %}">
+          <a href="/sis/dashboard/">Student</a>
+          <div class="dropdown">
+            <ul>
+              {% if perms.sis.change_student or perms.sis.view_student %}
+                <li><a href="{% url "admin:sis_student_changelist" %}">{% trans 'Edit Students' %}</a></li>
+              {% endif %}
+              {% if 'ecwsp.attendance' in settings.INSTALLED_APPS %}
+              {% if perms.attendance.take_studentattendance or perms.attendance.take_studentattendance %}
+                  <li>
+                  <a href="{% url 'ecwsp.attendance.views.teacher_attendance' %}"> {% trans 'Take Daily Attendance' %} </a>
+                  </li>
+              {% endif %}
+                  <li>
+                  <a href="/attendance/daily_attendance_report/">Daily Attendance Report</a>
+                  </li>
+              {% endif %}
+              {% if perms.sis.reports %}
+                  <li><a href="/reports/student_report/">{% trans 'Reports' %}</a></li>
+              {% endif %}
+            </ul>
+          </div>
+      </li>
+    {% endif %}
+    
+
+    {% if 'ecwsp.schedule' in settings.INSTALLED_APPS %}
+    {% if perms.schedule.change_course or perms.grades.change_own_grade %}
+      <li>
+        <a href="/schedule/dashboard/"> {% trans 'Courses' %} </a>
+        <div class="dropdown">
+          <ul>
+              {% if perms.grades.change_own_grade and 'ecwsp.grades' in settings.INSTALLED_APPS %}
+                <li><a href="{% url "ecwsp.grades.views.select_grade_method" %}?next=teacher_grade">{% trans 'Submit Grades' %}</a></li>
+              {% endif %}
+              {% if perms.attendance.take_studentattendance or perms.attendance.take_studentattendance %}
+                  <li>
+                  <a href="{% url 'ecwsp.attendance.views.select_course_section_for_attendance' %}"> {% trans 'Take Course Attendance' %} </a>
+                  </li>
+              {% endif %}
+              {% if perms.attendance.change_coursesectionattendance %}
+                  <li>
+                  <a href="/reports/attendance_report/"> {% trans 'Course Attendance Reports' %} </a>
+                  </li>
+              {% endif %}
+          </ul>
+        </div>
+      </li>
+    {% endif %}
+    {% endif %}
+    
+
+    {% if 'ecwsp.discipline' in settings.INSTALLED_APPS %}
+    {% if perms.discipline.change_studentdiscipline %}
+      <li>
+        <a href="/discipline/dashboard/"> {% trans 'Discipline' %} </a>
+      </li>
+    {% endif %}
+    {% endif %}
+    
+  
+  
+  {% if perms.counseling.add_referralform and 'ecwsp.counseling' in settings.INSTALLED_APPS %}
+    <li>
+      <a href="/counseling/dashboard"> Counseling </a>
+    </li>
+  {% endif %}
+  
+  {% if 'ecwsp.work_study' in settings.INSTALLED_APPS %} {% if perms.work_study.change_studentworker or perms.work_study.view_studentworker or perm.work_study.reports %}
+    <li>
+      <a href="/work_study/dashboard/"> CWSP </a>
+    </li>
+  {% endif %}{% endif %}
+
+
+
+  {% if perms.alumni.change_alumni and 'ecwsp.alumni' in settings.INSTALLED_APPS %}
+    <li>
+      <a href="/alumni/dashboard/"> Alumni </a>
+    </li>
+  {% endif %}
+  {% if perms.admissions.change_applicant and 'ecwsp.admissions' in settings.INSTALLED_APPS %}
+    <li>
+      <a href="/admissions/dashboard/"> Admissions </a>
+    </li>
+  {% endif %}
+
+
+  {% if perms.alumni.change_alumni or perms.auth.change_user or perms.administration.change_configuration or perms.engrade_sync.change_coursesync %}
+  <li>
+    <a href="/administration/dashboard/"> Management </a>
+  </li>
+  {% endif %}
+
+  
+  </ul>
+</div>
+
